@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Frank Lo</title>
+	<meta name="description"
+		content="Animating SVG text on a path on scroll using the Intersection Observer API and SVG filters.">
+	<meta name="keywords" content="svg text, animation, scroll, svg filter, Intersection Observer">
+	<meta name="author" content="Codrops">
+	<link rel="shortcut icon" href="./favicon.png">
+	<link rel="stylesheet" href="https://use.typekit.net/rhw1vur.css">
+	<link rel="stylesheet" type="text/css" href="./css/main.css">
+	<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Anton&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://unpkg.com/splitting/dist/splitting.css">
+	<link rel="stylesheet" href="https://unpkg.com/splitting/dist/splitting-cells.css">
+	<script src = "https://www.motionblurjs.com/blur.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+	<script src="https://unpkg.com/splitting/dist/splitting.min.js"></script>
+	<script src="https://kit.fontawesome.com/90fea4eadb.js" crossorigin="anonymous"></script>
+	<script>
+		document.documentElement.className = "js";
+
+		var supportsCssVars = function supportsCssVars() {
+			var e,
+				t = document.createElement("style");
+			return t.innerHTML = "root: { --tmp-var: bold; }", document.head.appendChild(t), e = !!(window.CSS && window
+				.CSS.supports && window.CSS.supports("font-weight", "var(--tmp-var)")), t.parentNode.removeChild(t), e;
+		};
+
+		supportsCssVars() || alert("Please view this demo in a modern browser that supports CSS Variables.");
+	</script>
+	<!--script src="//tympanus.net/codrops/adpacks/analytics.js"></script-->
+</head>
+
+<body class="loading">
+	<div class="cursor"></div>
+	<div class="menu hide">
+		<div class="menu_content">
+			<a href="./index.html">HOME</a>
+			<a href="#">BLOG</a>
+			<a href="./works.html">Works</a>
+		</div>
+		<div class="menu_overlay"></div>
+	</div>
+	<div class="copyright">
+        <h1 class="copyright__title">Design &amp; Develop BY FRANK LO</h1>
+    </div>
+	<svg class="hidden">
+		<defs>
+			<filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
+				<feGaussianBlur stdDeviation="0" result="blur" data-min-deviation="0" data-max-deviation="10">
+				</feGaussianBlur>
+				<feMerge>
+					<feMergeNode in="blur"></feMergeNode>
+				</feMerge>
+			</filter>
+			<filter id="blur2" x="-30%" y="-30%" width="160%" height="160%">
+				<feGaussianBlur in="SourceAlpha" stdDeviation="0" result="glow" data-min-deviation="0"
+					data-max-deviation="30"></feGaussianBlur>
+				<feColorMatrix result="bluralpha" type="matrix" values="0 -1 0 0 0 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1.8 0 ">
+				</feColorMatrix>
+				<feOffset in="bluralpha" dx="0.000000" dy="0.000000" result="offsetBlur"></feOffset>
+				<feMerge>
+					<feMergeNode in="offsetBlur"></feMergeNode>
+					<feMergeNode in="SourceGraphic"></feMergeNode>
+				</feMerge>
+			</filter>
+			<filter id="distortionFilter">
+				<feTurbulence type="fractalNoise" baseFrequency="0.01 0.03" numOctaves="2" seed="2" stitchTiles="stitch"
+					x="0%" y="0%" width="100%" height="100%" result="noise"></feTurbulence>
+				<feDisplacementMap in="SourceGraphic" in2="noise" scale="0" data-min-scale="0" data-max-scale="100"
+					xChannelSelector="R" yChannelSelector="B" x="0%" y="0%" width="100%" height="100%"
+					filterUnits="userSpaceOnUse"></feDisplacementMap>
+			</filter>
+			<filter id="distortionFilter2">
+				<feGaussianBlur stdDeviation="10" result="glow"></feGaussianBlur>
+				<feTurbulence type="fractalNoise" baseFrequency="0 0.1" numOctaves="2" seed="2" stitchTiles="noStitch"
+					x="-30%" y="-30%" width="160%" height="160%" result="noise"></feTurbulence>
+				<feDisplacementMap in="SourceGraphic" in2="noise" scale="0" data-min-scale="0" data-max-scale="50"
+					xChannelSelector="R" yChannelSelector="B" x="-30%" y="-30%" width="160%" height="160%"
+					filterUnits="userSpaceOnUse" result="displacement"></feDisplacementMap>
+				<feMerge>
+					<feMergeNode in="glow"></feMergeNode>
+					<feMergeNode in="displacement"></feMergeNode>
+				</feMerge>
+			</filter>
+		</defs>
+	</svg>
+	<main>
+		<div class="frame frame--screen">
+			<div class="frame__title-wrap">
+				<!-- <h1 class="frame__title">Animating SVG Text on a Path</h1> -->
+				<div class="frame__links">
+					<a href="mailto:cruise1985r@outlook.com?subject=邮件标题&body=邮件内容">E-MAIL</a>
+					<a href="https://codepen.io/Oberkommando">CODEPEN</a>
+					<a href="https://steamcommunity.com/id/uberkommando/">STEAM</a>
+					<a href="https://twitter.com/ExtremeTitanIII">twitter</a>
+				</div>
+			</div>
+			<div class="frame__heading__box">
+				<div class="frame__heading__left">
+					<h2 class="frame__heading">FRANK LO</h2>
+					<a class="sound">
+						<svg viewBox="0 0 921.5 41.9">
+							<path class="st0" d="M74.9,0.5C94,0.5,94,41.4,112.6,41.4c19.1,0,19.1-40.9,37.7-40.9c19.1,0,19.1,40.9,37.7,40.9
+							c19.1,0,19.1-38.1,37.7-38.1c19.1,0,19.1,33.1,37.7,33.1c19.1,0,19.1-27.7,37.7-27.7c19.1,0,19.1,22.7,37.7,22.7
+							c19.1,0,19.1-17.7,37.7-17.7c19.1,0,19.1,12.7,37.7,12.7c19.1,0,19.1-7.7,37.7-7.7c19.1,0,19.1,5,37.7,5c19.1,0,19.1-1.8,37.7-1.8
+							c19.1,0,17.7,0,36.3,0c19.1,0,13.6,0,32.2,0c19.1,0,23.6,0,42.7,0c19.1,0,264.2,0,283.3,0"></path>
+							<path class="st0" d="M0,0.5c19.1,0,19.1,40.9,37.7,40.9c19.1,0,19.1-40.9,37.7-40.9"></path>
+						</svg>
+					</a>
+				</div>
+				<a class="frame__menu">
+					<i></i>
+					<i></i>
+				</a>
+			</div>
+			<nav class="frame__links frame__links--header">
+				<a href="./index.html">HOME</a>
+				<a href="#">BLOG</a>
+				<a href="./works.html">Works</a>
+			</nav>
+		</div>
+		<header class="intro">
+			<h1 class="intro__title">
+				<div data-splitting>U-XPERIENCE</div>
+			</h1>
+			<p class="intro__hint">Welcome, My Friend</p>
+		</header>
+		<div class="grid">
+			<div class="grid__item">
+				<span class="grid__item-number">01</span>
+				<img class="grid__item-img" src="./img/1.jpg" alt="Some image">
+				<h3 class="grid__item-title">About Me</h3>
+				<p class="grid__item-description">我是一名UI设计师，2017年毕业于湖南工业大学。我热爱界面和视觉设计，动效设计以及编码。我对WebGL，JavaScript动画库有一定研究。
+					了解如何利用第三方开源工具构建数据可视化界面。
+				</p>
+			</div>
+			<div class="grid__item">
+				<span class="grid__item-number">02</span>
+				<img class="grid__item-img" src="./img/2.jpg" alt="Some image">
+				<h3 class="grid__item-title">Planning（规划）</h3>
+				<p class="grid__item-description">要满足什么功能、需求？要哪些人来做？需要什么样的技术？在自己的角度看，我应该提出什么解决方案？当然，我们应该因地制宜地计划，
+					而不是机械地按照书本和程序规则走。</p>
+			</div>
+		</div>
+		<svg class="svgtext svgtext--1" data-filter-type="blur" width="120%" preserveAspectRatio="xMidYMid meet"
+			viewBox="0 0 1000 200">
+			<path id="text-curve1" d="M 0 100 Q 250 200 500 100 Q 750 0 1000 100" fill="none"></path>
+			<text filter="url(#blur)">
+				<textPath href="#text-curve1">
+					You may think I’m small, but I have a universe inside my mind.
+				</textPath>
+			</text>
+		</svg>
+		<svg class="svgtext" data-filter-type="blur" width="120%" preserveAspectRatio="xMidYMid meet"
+			viewBox="0 0 1000 200">
+			<path id="text-curve11" d="M 0 100 Q 250 0 500 100 Q 750 200 1000 100" fill="none"></path>
+			<text filter="url(#blur2)">
+				<textPath href="#text-curve11">
+					Don't forget about the stardust. Don't forget about the quartz rocks in the woods.
+				</textPath>
+			</text>
+		</svg>
+		<div class="grid">
+			<div class="grid__item">
+				<span class="grid__item-number">03</span>
+				<img class="grid__item-img" src="./img/3.jpg" alt="Some image">
+				<h3 class="grid__item-title">Feasibility（可行性）</h3>
+				<p class="grid__item-description">
+					设计不同于艺术，不能毫不受约束的展开，往往受到成本和技术的限制。动画，动效对于设计师来说是可以在AE上构思并实现的，然而对开发者而言却是灾难性的。
+					可行性是决定了能不能，这是任何团队无法绕开的。
+				</p>
+			</div>
+			<div class="grid__item">
+				<span class="grid__item-number">04</span>
+				<img class="grid__item-img" src="./img/4.jpg" alt="Some image">
+				<h3 class="grid__item-title">Components（组件）</h3>
+				<p class="grid__item-description">
+					2020年代，计算机技术获得了极大的发展。活跃的技术社区，独立开发者，第三方应用丰富了UI/UX的开发工具库。很多时候我们再也不需要自己制造“轮子”，
+					从零打造一个工具，但我们依然需要丰富的知识去利用现成的资源。
+				</p>
+			</div>
+		</div>
+		<img class="bigimg" src="./img/big1.jpg" alt="Some image">
+		<svg class="svgtext svgtext--2" data-filter-type="distortion" width="120%" preserveAspectRatio="xMidYMid meet"
+			viewBox="0 0 1000 200">
+			<path id="text-curve2" d="M 0 50 Q 100 0 200 100 Q 300 200 650 50 C 750 0 750 150 1000 50" fill="none">
+			</path>
+			<text filter="url(#distortionFilter)">
+				<textPath href="#text-curve2">
+					Dwell on the beauty of life. Watch the stars.
+				</textPath>
+			</text>
+		</svg>
+		<svg class="svgtext" data-filter-type="distortion" width="120%" preserveAspectRatio="xMidYMid meet"
+			viewBox="0 0 1000 300">
+			<path id="text-curve22" d="M 0 200 Q 150 300 300 200 Q 700 0 1000 150" fill="none"></path>
+			<text filter="url(#distortionFilter2)">
+				<textPath href="#text-curve22">
+					The cosmos is within us. We are made of star-stuff.
+				</textPath>
+			</text>
+		</svg>
+		<div class="grid">
+			<div class="grid__item">
+				<span class="grid__item-number">05</span>
+				<img class="grid__item-img" src="./img/5.jpg" alt="Some image">
+				<h3 class="grid__item-title">Communication（沟通）</h3>
+				<p class="grid__item-description">
+					对于一名设计师而言，沟通始终是工作的重心之一，设计师要充当PM，开发者和用户之间的协调者，通过沟通来把握各方的需求来进行设计，学会合理的取舍。
+					只有落实到需求才不至于设计和各方脱节，耗费时间和成本。
+				</p>
+			</div>
+			<div class="grid__item">
+				<span class="grid__item-number">06</span>
+				<img class="grid__item-img" src="./img/6.jpg" alt="Some image">
+				<h3 class="grid__item-title">Inspiration（灵感激发）</h3>
+				<p class="grid__item-description">广泛的阅读，浏览大量的网站和不同人之间的交流，甚至是玩游戏都可以激发创作的灵感。我们很多的想法都是借鉴了生活。世界上没有可以凭空创造的东西，
+					也许我们的思维也是遵循热力学定律的？
+				</p>
+			</div>
+		</div>
+		<svg class="svgtext svgtext--3" data-filter-type="blur" width="120%" preserveAspectRatio="xMidYMid meet"
+			viewBox="0 0 1000 200">
+			<path id="text-curve3" d="M 0 150 Q 200 50 500 50 Q 800 50 1000 150 " fill="none"></path>
+			<text filter="url(#blur)">
+				<textPath href="#text-curve3">
+					When it is dark enough, you can see the stars.
+				</textPath>
+			</text>
+		</svg>
+		<svg class="svgtext svgtext--3" data-filter-type="blur" width="120%" preserveAspectRatio="xMidYMid meet"
+			viewBox="0 0 1000 200">
+			<path id="text-curve4" d="M 0 150 Q 200 50 500 50 Q 800 50 1000 150 " fill="none"></path>
+			<text filter="url(#blur)">
+				<textPath href="#text-curve4">
+					It is not the man who has too little, but the man who craves more, that is poor.
+				</textPath>
+			</text>
+		</svg>
+		<svg class="svgtext svgtext--3" data-filter-type="blur" width="120%" preserveAspectRatio="xMidYMid meet"
+			viewBox="0 0 1000 200">
+			<path id="text-curve5" d="M 0 150 Q 200 50 500 50 Q 800 50 1000 150 " fill="none"></path>
+			<text filter="url(#blur)">
+				<textPath href="#text-curve5">
+					Live by love though the stars walk backward.
+				</textPath>
+			</text>
+		</svg>
+		<img class="bigimg" src="./img/big2.jpg" alt="Some image">
+		<div class="grid-wrap">
+			<svg class="svgtext svgtext--4" data-filter-type="blur" width="120%" preserveAspectRatio="xMidYMid meet"
+				viewBox="0 0 1000 200">
+				<path id="textcircle" d="M 0 0 Q 200 150 500 150 Q 850 150 1000 0 " fill="none"></path>
+				<text filter="url(#blur)">
+					<textPath href="#textcircle">
+						Yours is the light by which my spirit's born: you are my sun, my moon, and all my stars.
+					</textPath>
+				</text>
+			</svg>
+			<div class="grid">
+				<div class="grid__item">
+					<span class="grid__item-number">07</span>
+					<img class="grid__item-img" src="./img/7.jpg" alt="Some image">
+					<h3 class="grid__item-title">Visual Design（视觉设计）</h3>
+					<p class="grid__item-description">.......等等，你别跑偏了！一名设计者的核心是设计能力，版面、色彩、字体、图形和图像这些都是必不可少的要素。
+						有时候一个项目的交互逻辑就是很简单，你需要做的只是设计一个突出视觉元素的界面，别老是画蛇添足加动效！</p>
+				</div>
+				<div class="grid__item">
+					<span class="grid__item-number">08</span>
+					<img class="grid__item-img" src="./img/8.jpg" alt="Some image">
+					<h3 class="grid__item-title">Efficient Equipment</h3>
+					<p class="grid__item-description">作为一名设计者，你应该要有一台高性能PC主机，一个色彩极佳的显示器，一部高分屏手机，一个iPad Pro，要不再加个手绘板？
+						可靠的，多样化的工具可以帮助我们更快更好地解决问题。
+					</p>
+				</div>
+			</div>
+		</div>
+		<footer class="frame">
+			<div class="frame__links__last">
+				<a href="https://codepen.io/Oberkommando" target="_blank"><i class="fa fa-codepen"></i></a>
+				<a href="https://twitter.com/ExtremeTitanIII" target="_blank"><i class="fa fa-twitter"></i></a>
+				<a href="https://steamcommunity.com/id/uberkommando/" target="_blank"><i class="fa fa-steam"></i></a>
+				<a href="mailto:cruise1985r@outlook.com?subject=邮件标题&body=邮件内容" target="_blank"><i class="fas fa-envelope"></i></a>
+			</div>
+			<h1 class="frame__title">Design & Develop BY FRANK LO</h1>
+		</footer>
+	</main>
+	<audio preload="auto" autoplay loop>
+		<source src="./assets/audio.mp3" type='audio/mpeg; codecs="mp3"'>
+	</audio>
+
+	<script>
+		Splitting();
+	</script>
+	<script src="./js/main.js"></script>
+	<script src="./js/config.js"></script>
+</body>
+
+</html>
